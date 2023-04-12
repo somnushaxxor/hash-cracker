@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://kolesnik.fit.nsu.ru/hashcracker/schema/worker/response">
+    <xs:element name="CrackingTaskWorkerResponse">
+        <xs:annotation>
+            <xs:documentation>Response containing strings with the matching hash</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="RequestId" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>Request UUID</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="PartIndex" type="xs:int">
+                    <xs:annotation>
+                        <xs:documentation>Request part index</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="Answers">
+                    <xs:annotation>
+                        <xs:documentation>Suitable words</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="words" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
