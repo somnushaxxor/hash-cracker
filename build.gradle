@@ -8,9 +8,6 @@ subprojects {
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'java'
 
-    group 'ru.nsu.fit.kolesnik'
-    version '1.0-SNAPSHOT'
-
     repositories {
         mavenCentral()
     }
