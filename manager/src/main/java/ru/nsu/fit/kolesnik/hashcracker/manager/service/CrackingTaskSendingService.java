@@ -4,6 +4,6 @@ import ru.nsu.fit.kolesnik.hashcracker.manager.model.CrackingRequest;
 
 public interface CrackingTaskSendingService {
 
-    void sendTasksToWorkers(CrackingRequest crackingRequest);
+    void sendTasks(CrackingRequest crackingRequest);
 
 }

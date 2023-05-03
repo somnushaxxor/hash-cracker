@@ -20,7 +20,7 @@ public class CrackingTaskServiceImpl implements CrackingTaskService {
                                 CrackingTaskOperations.executeTask(managerRequest)
                         , crackingTaskExecutor)
                 .thenAccept(suitableWords ->
-                        crackingTaskResultSendingService.sendTaskResultToManager(suitableWords, managerRequest)
+                        crackingTaskResultSendingService.sendTaskResult(suitableWords, managerRequest)
                 );
     }
 

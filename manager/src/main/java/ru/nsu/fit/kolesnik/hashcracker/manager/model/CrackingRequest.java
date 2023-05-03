@@ -2,30 +2,47 @@ package ru.nsu.fit.kolesnik.hashcracker.manager.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.UUID;
+import java.util.Set;
 
 @Getter
 @Setter
+@Document("requests")
 public class CrackingRequest {
 
-    private final UUID id;
+    @Id
+    private String id;
+
+    @Field("status")
     private CrackingRequestStatus status;
-    private final String hash;
-    private final int maxLength;
-    private final int tasksNumber;
-    private List<Integer> completedTasks;
-    private final List<String> data;
+
+    @Field("hash")
+    private String hash;
+
+    @Field("max_length")
+    private Integer maxLength;
+
+    @Field("tasks_number")
+    private Integer tasksNumber;
+
+    @Field("completed_tasks")
+    private Set<Integer> completedTasks;
+
+    @Field("data")
+    private List<String> data;
 
     public CrackingRequest(String hash, int maxLength, int tasksNumber) {
-        this.id = UUID.randomUUID();
         this.status = CrackingRequestStatus.IN_PROGRESS;
         this.hash = hash;
         this.maxLength = maxLength;
         this.tasksNumber = tasksNumber;
-        this.completedTasks = new ArrayList<>();
+        this.completedTasks = new HashSet<>();
         this.data = new ArrayList<>();
     }
 

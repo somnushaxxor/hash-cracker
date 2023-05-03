@@ -1,21 +1,68 @@
 version: '3.8'
 services:
+  mongo-primary:
+    image: mongo:5.0.16-focal
+    ports:
+      - '27017:27017'
+    depends_on:
+      - mongo-secondary-1
+      - mongo-secondary-2
+    volumes:
+      - ./mongo-replica-set-init.sh:/scripts/init.sh
+    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
+
+  mongo-secondary-1:
+    image: mongo:5.0.16-focal
+    ports:
+      - '27018:27017'
+    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
+
+  mongo-secondary-2:
+    image: mongo:5.0.16-focal
+    ports:
+      - '27019:27017'
+    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
+
+  rabbitmq:
+    image: rabbitmq:3.11-management
+    ports:
+      - '15672:15672'
+    expose:
+      - '5672'
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
   manager:
     build: manager
     ports:
       - '8080:8080'
-    expose:
-      - '8080'
     environment:
       - PORT=8080
-      - WORKER_HOST=worker
-      - WORKER_PORT=8080
+      - WORKERS_NUMBER=2
+      - MONGO_URI=mongodb://mongo-primary:27017,mongo-secondary-1:27017,mongo-secondary-2:27017/crack-hash?replicaSet=rs0
+      - RABBIT_HOST=rabbitmq
+      - RABBIT_PORT=5672
+      - RABBIT_USERNAME=guest
+      - RABBIT_PASSWORD=guest
+      - TASK_QUEUE=tasks
+      - RESULT_QUEUE=results
+    depends_on:
+      - mongo-primary
+      - rabbitmq
 
   worker:
     build: worker
-    expose:
-      - '8080'
+    deploy:
+      mode: replicated
+      replicas: 2
     environment:
-      - PORT=8080
-      - MANAGER_HOST=manager
-      - MANAGER_PORT=8080
+      - RABBIT_HOST=rabbitmq
+      - RABBIT_PORT=5672
+      - RABBIT_USERNAME=guest
+      - RABBIT_PASSWORD=guest
+      - TASK_QUEUE=tasks
+      - RESULT_QUEUE=results
+    depends_on:
+      - mongo-primary
+      - rabbitmq

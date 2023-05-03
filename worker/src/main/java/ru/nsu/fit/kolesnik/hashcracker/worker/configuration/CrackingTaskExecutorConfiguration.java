@@ -10,13 +10,13 @@ import java.util.concurrent.Executor;
 @Configuration
 public class CrackingTaskExecutorConfiguration {
 
-    @Value("${cracking-task.executor.max-pool-size}")
-    private Integer crackingTaskExecutorMaxPoolSize;
+    @Value("${task.executor.max-pool-size}")
+    private Integer taskExecutorMaxPoolSize;
 
     @Bean
     public Executor crackingTaskExecutor() {
         final ThreadPoolTaskExecutor crackingTaskExecutor = new ThreadPoolTaskExecutor();
-        crackingTaskExecutor.setMaxPoolSize(crackingTaskExecutorMaxPoolSize);
+        crackingTaskExecutor.setMaxPoolSize(taskExecutorMaxPoolSize);
         return crackingTaskExecutor;
     }
 

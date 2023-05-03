@@ -10,12 +10,10 @@ import ru.nsu.fit.kolesnik.hashcracker.manager.mapper.CrackingRequestMapper;
 import ru.nsu.fit.kolesnik.hashcracker.manager.model.CrackingRequest;
 import ru.nsu.fit.kolesnik.hashcracker.manager.service.CrackingRequestService;
 
-import java.util.UUID;
-
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/hash")
-public class CrackingRequestExternalController {
+public class CrackingRequestController {
 
     private final CrackingRequestService crackingRequestService;
 
@@ -27,7 +25,7 @@ public class CrackingRequestExternalController {
     }
 
     @GetMapping("/status")
-    public CrackingRequestStatusResponse getCrackingRequestStatus(@RequestParam UUID requestId) {
+    public CrackingRequestStatusResponse getCrackingRequestStatus(@RequestParam String requestId) {
         final CrackingRequest crackingRequest = crackingRequestService.getCrackingRequestById(requestId);
         return CrackingRequestMapper.mapToStatusResponse(crackingRequest);
     }

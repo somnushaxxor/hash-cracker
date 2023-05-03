@@ -4,13 +4,11 @@ import ru.nsu.fit.kolesnik.hashcracker.manager.dto.CrackingRequestCreationReques
 import ru.nsu.fit.kolesnik.hashcracker.manager.model.CrackingRequest;
 import ru.nsu.fit.kolesnik.hashcracker.schema.worker.response.CrackingTaskWorkerResponse;
 
-import java.util.UUID;
-
 public interface CrackingRequestService {
 
     CrackingRequest createCrackingRequest(CrackingRequestCreationRequest creationRequest);
 
-    CrackingRequest getCrackingRequestById(UUID id);
+    CrackingRequest getCrackingRequestById(String id);
 
     void updateCrackingRequestResultsBy(CrackingTaskWorkerResponse workerResponse);
 
