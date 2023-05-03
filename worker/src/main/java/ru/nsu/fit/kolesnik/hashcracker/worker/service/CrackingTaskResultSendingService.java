@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface CrackingTaskResultSendingService {
 
-    void sendTaskResultToManager(List<String> suitableWords, CrackingTaskManagerRequest managerRequest);
+    void sendTaskResult(List<String> suitableWords, CrackingTaskManagerRequest managerRequest);
 
 }

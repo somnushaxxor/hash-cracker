@@ -13,7 +13,6 @@ import ru.nsu.fit.kolesnik.hashcracker.schema.worker.response.CrackingTaskWorker
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -32,15 +31,14 @@ public class CrackingRequestServiceImpl implements CrackingRequestService {
         final int crackingTasksNumber = countCrackingTasksNumber();
         final CrackingRequest crackingRequest = new CrackingRequest(creationRequest.hash(), creationRequest.maxLength(),
                 crackingTasksNumber);
-        crackingTaskSendingService.sendTasksToWorkers(crackingRequest);
-        // TODO ???
         crackingRequestRepository.save(crackingRequest);
+        crackingTaskSendingService.sendTasks(crackingRequest);
         scheduleCrackingRequestCancellation(crackingRequest);
         return crackingRequest;
     }
 
     private int countCrackingTasksNumber() {
-        return workersNumber; // TODO ????
+        return workersNumber;
     }
 
     private void scheduleCrackingRequestCancellation(CrackingRequest crackingRequest) {
@@ -48,10 +46,8 @@ public class CrackingRequestServiceImpl implements CrackingRequestService {
     }
 
     private void cancelCrackingRequest(CrackingRequest crackingRequest) {
-        synchronized (crackingRequest) {
-            crackingRequest.setStatus(CrackingRequestStatus.ERROR);
-            crackingRequestRepository.save(crackingRequest);
-        }
+        crackingRequest.setStatus(CrackingRequestStatus.ERROR);
+        crackingRequestRepository.save(crackingRequest);
     }
 
     private Instant getCrackingRequestTimeoutInstant() {
@@ -59,23 +55,22 @@ public class CrackingRequestServiceImpl implements CrackingRequestService {
     }
 
     @Override
-    public CrackingRequest getCrackingRequestById(UUID id) {
+    public CrackingRequest getCrackingRequestById(String id) {
         return crackingRequestRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Request not found: " + id.toString()));
+                .orElseThrow(() -> new NotFoundException("Request not found: " + id));
     }
 
     @Override
     public void updateCrackingRequestResultsBy(CrackingTaskWorkerResponse workerResponse) {
-        final CrackingRequest crackingRequest = getCrackingRequestById(UUID.fromString(workerResponse.getRequestId()));
-        synchronized (crackingRequest) { // TODO ?????
-            if (crackingRequest.getStatus() == CrackingRequestStatus.IN_PROGRESS) {
-                crackingRequest.getData().addAll(workerResponse.getAnswers().getWords());
-                crackingRequest.getCompletedTasks().add(workerResponse.getPartIndex());
-                if (crackingRequest.getTasksNumber() == crackingRequest.getCompletedTasks().size()) {
-                    crackingRequest.setStatus(CrackingRequestStatus.READY);
-                }
-                crackingRequestRepository.save(crackingRequest);
+        final CrackingRequest crackingRequest = getCrackingRequestById(workerResponse.getRequestId());
+        if (crackingRequest.getStatus() == CrackingRequestStatus.IN_PROGRESS
+                && !crackingRequest.getCompletedTasks().contains(workerResponse.getPartIndex())) {
+            crackingRequest.getData().addAll(workerResponse.getAnswers().getWords());
+            crackingRequest.getCompletedTasks().add(workerResponse.getPartIndex());
+            if (crackingRequest.getTasksNumber() == crackingRequest.getCompletedTasks().size()) {
+                crackingRequest.setStatus(CrackingRequestStatus.READY);
             }
+            crackingRequestRepository.save(crackingRequest);
         }
     }
 
