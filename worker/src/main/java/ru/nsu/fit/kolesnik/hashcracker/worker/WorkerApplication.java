@@ -1,0 +1,11 @@
+package ru.nsu.fit.kolesnik.hashcracker.worker;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+class WorkerApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(WorkerApplication.class, args);
+    }
+}

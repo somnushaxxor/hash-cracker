@@ -1,0 +1,39 @@
+{
+  "$id": "http://ccfit.nsu.ru/schema/crack-hash-worker-response.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CrackHashWorkerResponse",
+  "description": "Ответ, содержащий строки с совпадающим хэшом",
+  "type": "object",
+  "properties": {
+    "taskId": {
+      "type": "string",
+      "description": "UUID задачи"
+    },
+    "partIndex": {
+      "type": "integer",
+      "description": "Индекс части задачи"
+    },
+    "result": {
+      "type": "object",
+      "description": "Результат",
+      "properties": {
+        "words": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "requestId",
+    "partIndex",
+    "result"
+  ],
+  "dependentRequired": {
+    "result": [
+      "words"
+    ]
+  }
+}

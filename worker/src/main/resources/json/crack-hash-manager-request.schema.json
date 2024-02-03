@@ -1,0 +1,54 @@
+{
+  "$id": "http://ccfit.nsu.ru/schema/crack-hash-manager-request.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CrackHashManagerRequest",
+  "description": "Задача на взлом хэша в заданном пространстве строк",
+  "type": "object",
+  "properties": {
+    "taskId": {
+      "type": "string",
+      "description": "UUID запроса"
+    },
+    "partIndex": {
+      "type": "integer",
+      "description": "Индекс части задачи"
+    },
+    "partCount": {
+      "type": "integer",
+      "description": "Общее число частей задачи"
+    },
+    "hash": {
+      "type": "string",
+      "description": "Хэщ"
+    },
+    "maxLength": {
+      "type": "integer",
+      "description": "Максимальная длина последовательности"
+    },
+    "alphabet": {
+      "type": "object",
+      "description": "Алфавит для генерации строк",
+      "properties": {
+        "symbols": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "requestId",
+    "partIndex",
+    "partCount",
+    "hash",
+    "maxLength",
+    "alphabet"
+  ],
+  "dependentRequired": {
+    "alphabet": [
+      "symbols"
+    ]
+  }
+}
