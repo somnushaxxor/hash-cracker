@@ -1,3 +1,7 @@
+group 'ru.nsu.fit.kolesnik.hashcracker'
+
+version '1.0.0-SNAPSHOT'
+
 dependencies {
-    implementation 'com.googlecode.combinatoricslib:combinatoricslib:2.3'
+    implementation 'com.github.dpaukov:combinatoricslib3:3.3.3'
 }
