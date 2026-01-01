@@ -1,12 +1,12 @@
 package ru.nsu.fit.kolesnik.hashcracker.manager.core.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Data
+@AllArgsConstructor
 public class Task {
     private final UUID id;
     private TaskStatus status;
@@ -14,17 +14,17 @@ public class Task {
     private final int maxLength;
     private final Alphabet alphabet;
     private final int partsNumber;
-    private final List<Integer> completedPartsIndexes;
-    private final List<String> data;
+    private final Set<Integer> completedPartsIndexes;
+    private final List<String> resultWords;
 
     public Task(String hash, int maxLength, Alphabet alphabet, int partsNumber) {
         this.id = UUID.randomUUID();
-        this.status = TaskStatus.IN_PROGRESS;
+        this.status = TaskStatus.CREATED;
         this.hash = hash;
         this.maxLength = maxLength;
         this.alphabet = alphabet;
         this.partsNumber = partsNumber;
-        this.completedPartsIndexes = new ArrayList<>();
-        this.data = new ArrayList<>();
+        this.completedPartsIndexes = new HashSet<>(partsNumber);
+        this.resultWords = new ArrayList<>();
     }
 }

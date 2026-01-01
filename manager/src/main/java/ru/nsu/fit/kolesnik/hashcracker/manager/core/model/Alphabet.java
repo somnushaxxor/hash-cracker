@@ -7,7 +7,7 @@ import java.util.Set;
 
 @Data
 public class Alphabet {
-    private final Set<Character> characters;
+    private final List<Character> characters;
 
     public List<String> toStringList() {
         return characters.stream()

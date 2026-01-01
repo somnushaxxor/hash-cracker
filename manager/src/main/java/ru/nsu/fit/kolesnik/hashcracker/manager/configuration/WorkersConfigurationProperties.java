@@ -7,8 +7,8 @@ import org.springframework.context.annotation.Configuration;
 
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "worker")
+@ConfigurationProperties(prefix = "workers")
 @Configuration
-public class WorkerConfigurationProperties {
-    private String taskPartSendingUri;
+public class WorkersConfigurationProperties {
+    private int number;
 }

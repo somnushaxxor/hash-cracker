@@ -4,7 +4,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.nsu.fit.kolesnik.hashcracker.manager.core.model.Alphabet;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Configuration
@@ -12,7 +14,7 @@ class DefaultAlphabetConfiguration {
     @Bean
     Alphabet defaultAlphabet() {
         // Generating alphabet that contains lowercase latin letters and digits
-        final Set<Character> characters = new HashSet<>(36);
+        final List<Character> characters = new ArrayList<>(36);
         for (char digitCode = '0'; digitCode <= '9'; digitCode++) {
             characters.add(digitCode);
         }

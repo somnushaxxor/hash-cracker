@@ -1,19 +1,81 @@
 version: '3.8'
+name: "hash-cracker"
+
 services:
+  mongo-primary:
+    image: mongo:5.0.16-focal
+    ports:
+      - '27017:27017'
+    depends_on:
+      - mongo-secondary-1
+      - mongo-secondary-2
+    volumes:
+      - ./mongo-replica-set-init.sh:/scripts/init.sh
+      - mongo-primary-data:/data/db
+    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
+
+  mongo-secondary-1:
+    image: mongo:5.0.16-focal
+    ports:
+      - '27018:27017'
+    volumes:
+      - mongo-secondary-1-data:/data/db
+    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
+
+  mongo-secondary-2:
+    image: mongo:5.0.16-focal
+    ports:
+      - '27019:27017'
+    volumes:
+      - mongo-secondary-2-data:/data/db
+    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
+
+  rabbitmq:
+    image: rabbitmq:3.11-management
+    ports:
+      - '15672:15672'
+    expose:
+      - '5672'
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+
   manager:
     build: manager
     ports:
       - '8080:8080'
     environment:
-      - WORKER_HOST=worker
-      - WORKER_PORT=8080
       - TASK_EXECUTION_MAX_DURATION=PT30S
+      - WORKERS_NUMBER=2
+      - MONGO_URI=mongodb://mongo-primary:27017,mongo-secondary-1:27017,mongo-secondary-2:27017/crack-hash?replicaSet=rs0
+      - RABBIT_HOST=rabbitmq
+      - RABBIT_PORT=5672
+      - RABBIT_USERNAME=guest
+      - RABBIT_PASSWORD=guest
+      - TASK_PARTS_QUEUE_NAME=task-parts
+      - TASK_PARTS_RESULTS_QUEUE_NAME=task-parts-results
+    depends_on:
+      - mongo-primary
+      - rabbitmq
 
   worker:
     build: worker
-    expose:
-      - '8080'
+    deploy:
+      mode: replicated
+      replicas: 2
     environment:
-      - MANAGER_HOST=manager
-      - MANAGER_PORT=8080
       - EXECUTOR_MAX_POOL_SIZE=100
+      - RABBIT_HOST=rabbitmq
+      - RABBIT_PORT=5672
+      - RABBIT_USERNAME=guest
+      - RABBIT_PASSWORD=guest
+      - TASK_PARTS_QUEUE_NAME=task-parts
+      - TASK_PARTS_RESULTS_QUEUE_NAME=task-parts-results
+    depends_on:
+      - mongo-primary
+      - rabbitmq
+
+volumes:
+  rabbitmq-data:
+  mongo-primary-data:
+  mongo-secondary-1-data:
+  mongo-secondary-2-data:

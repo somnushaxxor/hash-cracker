@@ -14,21 +14,14 @@ public class TaskDtoConverter {
     }
 
     public TaskStatusResponseDto convertToStatusResponse(Task task) {
-        return new TaskStatusResponseDto(convertToStatusDto(task.getStatus()), task.getData());
+        return new TaskStatusResponseDto(convertToStatusDto(task.getStatus()), task.getResultWords());
     }
 
     private TaskStatusDto convertToStatusDto(TaskStatus status) {
-        switch (status) {
-            case IN_PROGRESS -> {
-                return TaskStatusDto.IN_PROGRESS;
-            }
-            case READY -> {
-                return TaskStatusDto.READY;
-            }
-            case ERROR -> {
-                return TaskStatusDto.ERROR;
-            }
-            default -> throw new IllegalArgumentException("Failed to convert given status");
-        }
+        return switch (status) {
+            case CREATED, IN_PROGRESS -> TaskStatusDto.IN_PROGRESS;
+            case READY -> TaskStatusDto.READY;
+            case ERROR -> TaskStatusDto.ERROR;
+        };
     }
 }

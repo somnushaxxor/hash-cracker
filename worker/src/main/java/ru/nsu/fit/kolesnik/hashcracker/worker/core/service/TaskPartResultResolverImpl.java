@@ -16,13 +16,13 @@ public class TaskPartResultResolverImpl implements TaskPartResultResolver {
 
     @Override
     public List<String> resolveTaskPartResult(TaskPart taskPart) {
-        List<String> words = new ArrayList<>();
+        List<String> resultWords = new ArrayList<>();
         List<String> alphabet = taskPart.getAlphabet().toStringList();
         for (int length = 1; length <= taskPart.getMaxLength(); length++) {
             int possibleWordsNumber = (int) Math.pow(alphabet.size(), length);
             int start = start(taskPart.getIndex(), taskPart.getPartsNumber(), possibleWordsNumber);
             int partWordsNumber = partWordsNumber(taskPart.getIndex(), taskPart.getPartsNumber(), possibleWordsNumber);
-            words.addAll(
+            resultWords.addAll(
                     Generator.permutation(alphabet)
                             .withRepetitions(length)
                             .stream()
@@ -40,7 +40,7 @@ public class TaskPartResultResolverImpl implements TaskPartResultResolver {
                             .toList()
             );
         }
-        return words;
+        return resultWords;
     }
 
     private int start(int partIndex, int partsNumber, int wordsNumber) {

@@ -9,9 +9,13 @@ import java.util.UUID;
 public interface TaskService {
     Task createTask(TaskCreationRequest taskCreationRequest);
 
+    void produceTask(UUID taskId);
+
     Task getTaskById(UUID id);
 
     void updateTaskResultsBy(UUID taskId, int partIndex, List<String> resultWords);
 
     void cancelTask(UUID taskId);
+
+    List<Task> getCreatedTasks();
 }
